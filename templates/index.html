@@ -190,8 +190,8 @@
 <body>
 
 
-    <h1 id="age">Chargement...</h1>
-    <h1 id="nom">Chargement...</h1>
+    <p id="message">Aucune presence detecté...</p>
+    
 
     <h1>Dirigez <span>Walid</span> depuis n'importe où</h1>
 
@@ -227,8 +227,8 @@
                 const data = await response.json();
 
                 // Injection des données dans le HTML
-                document.getElementById('nom').textContent = data.nom !== null ? data.nom : 'Nom en attente...';
-                document.getElementById('age').textContent = data.age !== null ? data.age : 'Âge en attente...';
+                document.getElementById('message').textContent = data.nom !== null ? data.nom : 'Aucune presence detecté...';
+
             } catch (error) {
                 console.error("Erreur lors de la mise à jour des données :", error);
             }
