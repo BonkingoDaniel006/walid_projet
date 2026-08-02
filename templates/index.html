@@ -159,24 +159,26 @@
 
     #web-alert { 
         display: none; 
-        background: #ffeb3b; 
-        color: #333; 
+        background: #ef4444; 
+        color: white; 
         padding: 15px; 
-        border-radius: 10px; 
-        font-weight: bold; 
+        border-radius: 12px; 
+        font-weight: 600; 
         margin: 15px auto; 
-        max-width: 410px; 
-        width: 90%;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        max-width: 450px; 
+        width: 100%;
+        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4); 
         box-sizing: border-box;
         text-align: center;
+        font-size: 1.1rem;
     }
     .danger { 
-        background: #ff3333 !important; 
-        color: white !important; 
-        animation: blink 1s infinite; 
+        animation: blink 0.8s infinite alternate; 
     }
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    @keyframes blink { 
+        0% { opacity: 1; transform: scale(1); } 
+        100% { opacity: 0.7; transform: scale(1.02); } 
+    }
   </style>
 </head>
 <body>
@@ -215,6 +217,7 @@
                 .catch(err => console.error("Erreur commande :", err));
         }
 
+        // Vérification de l'état toutes les 500 ms (plus réactif)
         setInterval(function() {
             fetch('/status')
                 .then(response => response.json())
@@ -224,6 +227,7 @@
                     const txt = document.getElementById('status-text');
                     const msg = document.getElementById('message');
 
+                    // Statut Radar (Marche / Arrêt)
                     if (data.actif) {
                         txt.innerText = 'Walid-Bot : Radar Actif';
                         dot.style.backgroundColor = '#4ade80';
@@ -234,19 +238,22 @@
                         dot.style.boxShadow = 'none';
                     }
 
+                    // Statut Alarme / Intrusion
                     if (data.alarme) {
                         alertBox.style.display = 'block';
                         alertBox.classList.add('danger');
-                        alertBox.innerText = '⚠️ INTRUSION : ' + data.distance + ' cm !';
-                        msg.textContent = 'Présence détectée !';
+                        alertBox.innerText = '⚠️ INTRUSION DÉTECTÉE : ' + data.distance + ' cm !';
+                        msg.textContent = '🚨 Présence détectée à proximité !';
+                        msg.style.color = '#ef4444';
                     } else {
                         alertBox.style.display = 'none';
                         alertBox.classList.remove('danger');
                         msg.textContent = 'Aucune présence détectée...';
+                        msg.style.color = '#4b5563';
                     }
                 })
                 .catch(error => console.error('Erreur /status :', error));
-        }, 1000);
+        }, 500);
     </script>
 </body>
 </html>
