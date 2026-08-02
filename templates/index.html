@@ -190,8 +190,7 @@
 <body>
 
 
-    <p id="message">Aucune presence detecté...</p>
-    
+    <p id="message">Aucune présence détectée...</p>
 
     <h1>Dirigez <span>Walid</span> depuis n'importe où</h1>
 
@@ -219,30 +218,29 @@
     </div>
 
     <script>
-        // Fonction pour récupérer les données en arrière-plan
         async function updateData() {
             try {
-                // Requête GET vers l'API
                 const response = await fetch('/api/last-data');
                 const data = await response.json();
+                const message = document.getElementById('message');
 
-                // Injection des données dans le HTML
-                document.getElementById('message').textContent = data.nom !== null ? data.nom : 'Aucune presence detecté...';
-
+                if (data.intrusion) {
+                    message.textContent = 'Présence détectée !';
+                } else {
+                    message.textContent = 'Aucune présence détectée...';
+                }
             } catch (error) {
-                console.error("Erreur lors de la mise à jour des données :", error);
+                console.error('Erreur lors de la mise à jour des données :', error);
             }
         }
 
-        // Appel direct au chargement de la page
         updateData();
-
-        // Répétition automatique toutes les 3000 millisecondes (3 secondes)
         setInterval(updateData, 3000);
-    
-    
+
         function sendCommand(action) {
-            fetch('/' + action);
+            fetch('/' + action)
+                .then(response => response.json())
+                .catch(() => {});
         }
 
         setInterval(function() {
@@ -253,25 +251,26 @@
                     const dot = document.getElementById('dot');
                     const txt = document.getElementById('status-text');
 
-                    if(data.actif) {
-                        txt.innerText = "Walid-Bot : Radar Actif";
-                        dot.style.backgroundColor = "#4ade80";
-                        dot.style.boxShadow = "0 0 8px #4ade80";
+                    if (data.actif) {
+                        txt.innerText = 'Walid-Bot : Radar Actif';
+                        dot.style.backgroundColor = '#4ade80';
+                        dot.style.boxShadow = '0 0 8px #4ade80';
                     } else {
-                        txt.innerText = "Walid-Bot : Radar Arrêté";
-                        dot.style.backgroundColor = "#7f8c8d";
-                        dot.style.boxShadow = "none";
+                        txt.innerText = 'Walid-Bot : Radar Arrêté';
+                        dot.style.backgroundColor = '#7f8c8d';
+                        dot.style.boxShadow = 'none';
                     }
 
                     if (data.alarme) {
-                        alertBox.style.display = "block";
+                        alertBox.style.display = 'block';
                         alertBox.classList.add('danger');
-                        alertBox.innerText = "⚠️ INTRUSION : " + data.distance + " cm !";
+                        alertBox.innerText = '⚠️ INTRUSION : ' + data.distance + ' cm !';
                     } else {
-                        alertBox.style.display = "none";
+                        alertBox.style.display = 'none';
                         alertBox.classList.remove('danger');
                     }
-                });
+                })
+                .catch(error => console.error('Erreur /status :', error));
         }, 1000);
     </script>
 </body>
