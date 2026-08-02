@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,30 @@
 </head>
 <body>
     <h1>Hello world</h1>
-    <h1>{{age}}</h1>
-    <h1>{{nom}}</h1>
+    <h1 id="age">Chargement...</h1>
+    <h1 id="nom">Chargement...</h1>
+
+    <script>
+        // Fonction pour récupérer les données en arrière-plan
+        async function updateData() {
+            try {
+                // Requête GET vers l'API
+                const response = await fetch('/api/last-data');
+                const data = await response.json();
+
+                // Injection des données dans le HTML
+                document.getElementById('nom').textContent = data.nom !== null ? data.nom : 'Nom en attente...';
+                document.getElementById('age').textContent = data.age !== null ? data.age : 'Âge en attente...';
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour des données :", error);
+            }
+        }
+
+        // Appel direct au chargement de la page
+        updateData();
+
+        // Répétition automatique toutes les 3000 millisecondes (3 secondes)
+        setInterval(updateData, 3000);
+    </script>
 </body>
 </html>
