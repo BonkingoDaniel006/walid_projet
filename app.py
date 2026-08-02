@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
+# Variables globales pour stocker temporairement les données
 nom = None
 age = None
 
@@ -21,7 +22,6 @@ def receive_data():
     
     # Traitement ou sauvegarde des données ici...
     
-    
     return jsonify({
         "status": "success",
         "message": "Données bien enregistrées !",
@@ -31,8 +31,17 @@ def receive_data():
 
 @app.route("/home")
 def home():
+    return render_template("index.html", age=age, nom=nom)
 
-    return render_template("index.html", age = age, nom = nom)
-    
+
+# Nouvelle route pour alimenter le script JS du dashboard en direct
+@app.route('/api/last-data', methods=['GET'])
+def get_last_data():
+    return jsonify({
+        "nom": nom,
+        "age": age
+    }), 200
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
